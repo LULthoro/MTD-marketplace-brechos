@@ -2,16 +2,20 @@ package mtd;
 
 import mtd.model.Usuario;
 import mtd.repository.UsuarioRepository;
+import mtd.repository.UsuarioRepositoryRam;
+import mtd.repository.UsuarioRepositorySQLite;
 import mtd.service.UsuarioService;
 import mtd.validator.UsuarioValidator;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        UsuarioRepository usuarioRepository = new UsuarioRepository();
+        String modo = (args.length > 0) ? args[0] : "ram";
+        UsuarioRepository usuarioRepository = criarRepositorio(modo);
         UsuarioValidator usuarioValidator = new UsuarioValidator();
 
         UsuarioService usuarioService =
@@ -24,7 +28,7 @@ public class Main {
         tentarAdicionarUsuario(usuarioService, new Usuario(2, "Maria",  "maria@email.com",  "Mar1a#Secret"));
 
         // Nome invalido
-        tentarAdicionarUsuario(usuarioService, new Usuario(3, "",             "vazio@email.com",   "Senha@123"));
+        tentarAdicionarUsuario(usuarioService, new Usuario(3, "aldo",             "vazio@email.com",   "Senha@123"));
         tentarAdicionarUsuario(usuarioService, new Usuario(4, "Lucas123",     "numeros@email.com", "Senha@123"));
         tentarAdicionarUsuario(usuarioService, new Usuario(5, "NomeMuitoLongo","longo@email.com",  "Senha@123"));
 
@@ -39,11 +43,23 @@ public class Main {
 
         System.out.println("\n=== USUARIOS CADASTRADOS COM SUCESSO ===\n");
 
-        List<Usuario> usuarios = usuarioService.listarTodosUsuarios();
-
-        for (Usuario usuario : usuarios) {
-            System.out.println(usuario);
+        try {
+            List<Usuario> usuarios = usuarioService.listarTodosUsuarios();
+            for (Usuario usuario : usuarios) {
+                System.out.println(usuario);
+            }
+        } catch (SQLException e) {
+            System.err.println("[ERRO] Falha ao listar os usuários: " + e.getMessage());
         }
+    }
+
+    private static UsuarioRepository criarRepositorio(String modo) {
+        if (modo.equalsIgnoreCase("bd")) {
+            System.out.println("[INFO] Iniciando com persistência em SQLite (BD)...");
+            return new UsuarioRepositorySQLite();
+        }
+        System.out.println("[INFO] Iniciando com persistência em RAM...");
+        return new UsuarioRepositoryRam();
     }
 
     private static void tentarAdicionarUsuario(UsuarioService usuarioService, Usuario usuario) {
@@ -51,7 +67,9 @@ public class Main {
             usuarioService.adicionarUsuario(usuario);
             System.out.println("[OK]   Cadastrado: " + usuario.getNome());
         } catch (IllegalArgumentException e) {
-            System.out.println("[ERRO] Rejeitado [" + usuario.getNome() + "]: " + e.getMessage());
+            System.out.println("[ERRO] Rejeitado [" + usuario.getNome() + "] (Validacao): " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("[ERRO] Rejeitado [" + usuario.getNome() + "] (Banco de Dados): " + e.getMessage());
         }
     }
 }

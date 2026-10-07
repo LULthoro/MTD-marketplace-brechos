@@ -2,22 +2,12 @@ package mtd.repository;
 
 import mtd.model.Usuario;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
-public class UsuarioRepository {
+public interface UsuarioRepository {
 
-    private final List<Usuario> usuarios;
+    void adicionar(Usuario usuario) throws SQLException;
 
-    public UsuarioRepository() {
-        this.usuarios = new ArrayList<>();
-    }
-
-    public void adicionar(Usuario usuario) {
-        usuarios.add(usuario);
-    }
-
-    public List<Usuario> listarTodos() {
-        return new ArrayList<>(usuarios);
-    }
+    List<Usuario> listarTodos() throws SQLException;
 }
