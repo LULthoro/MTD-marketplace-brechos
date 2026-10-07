@@ -22,6 +22,12 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>
+                <configuration>
+                    <arguments>
+                        <argument>-Dfile.encoding=UTF-8</argument>
+                        <argument>-Dstdout.encoding=UTF-8</argument>
+                    </arguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>
