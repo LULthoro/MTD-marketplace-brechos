@@ -27,3 +27,7 @@ target/
 *.class
 .idea/
 .vscode/
+
+# SQLite databases
+*.db
+*.sqlite
