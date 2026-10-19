@@ -31,3 +31,15 @@ Busca e Filtros
 RF09 - Pesquisa de Produtos: Os usuários devem poder buscar peças específicas utilizando barra de pesquisa por palavras-chave.
 
 RF10 - Filtragem de Itens: O sistema deve disponibilizar filtros por faixa de preço, tamanho,categoria de vestuário e brechó de origem para facilitar a navegação do comprador. 
+
+
+Carrinho e Pedidos
+
+RF11 - Gestão do Carrinho de Compras: O comprador deve poder adicionar ou remover produtos selecionados em seu carrinho de compras 
+antes de finalizar a transação.
+
+RF12 - Finalização de Pedido (Checkout): O sistema deve processar a compra dos itens selecionados no carrinho, registrando o pedido 
+vinculado ao comprador e ao respectivo brechó.
+
+RF13 - Histórico de Pedidos: Tanto compradores quanto vendedores devem ter acesso a uma área com o histórico e o status dos pedidos realizados. 
+Busca e Filtros
