@@ -9,8 +9,16 @@ respectivas contas com segurança.
 
 RF03 - Gerenciamento de Perfil: O usuário deve poder consultar e atualizar as informações cadastrais do seu perfil.
 
-Lojas / Brechós 
+Lojas / Brechós
 RF04 - Cadastro de Brechó: O usuário com perfil de vendedor deve poder cadastrar os dados do seu brechó
 (nome comercial, descrição, políticas de troca/envio).
 
-RF05 - Gerenciamento da Loja: O lojista deve conseguir editar as informações do seu brechó e gerenciar a vitrine de seus produtos. 
+RF05 - Gerenciamento da Loja: O lojista deve conseguir editar as informações do seu brechó e gerenciar a vitrine de seus produtos.
+
+Produtos e Catálogo
+RF06 - Cadastro de Peças/Produtos: O lojista deve poder cadastrar novos itens de vestuário informando título, descrição detalhada, categoria, 
+tamanho, estado de conservação, preço e imagens ilustrativas.
+
+RF07 - Atualização e Remoção de Produtos: O vendedor deve ter a capacidade de alterar os dados de um produto existente ou removê-lo do catálogo ativo.
+
+RF08 - Visualização do Catálogo: O sistema deve exibir uma vitrine pública com todos os produtos disponíveis na plataforma, organizados por brechós ou categorias.
