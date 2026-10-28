@@ -78,9 +78,21 @@ Então a peça é salva e adicionada imediatamente à vitrine ativa da loja.
 
 RF07 - Atualização e Remoção de Produtos: O vendedor deve ter a capacidade de alterar os dados de um produto existente ou removê-lo do catálogo ativo.
 
+Cenário 7.1 (Remoção/Baixa de Item):
+
+Dado que uma peça cadastrada foi vendida fora da plataforma,
+Quando o vendedor seleciona o item e clica em "Remover do Catálogo",
+Então o produto deixa de ser exibido na vitrine e nas buscas.
+
 RF08 - Visualização do Catálogo: O sistema deve exibir uma vitrine pública com todos os produtos disponíveis na plataforma, organizados por brechós ou categorias.
 
-Busca e Filtros
+Cenário 8.1 (Navegação na Vitrine):
+
+Dado que qualquer visitante acessa a página inicial do marketplace,
+Quando navega pela vitrine,
+Então o sistema exibe os produtos disponíveis organizados em cards com imagem, título, preço, tamanho e nome do brechó.
+
+BUSCA E FILTRO
 
 RF09 - Pesquisa de Produtos: Os usuários devem poder buscar peças específicas utilizando barra de pesquisa por palavras-chave.
 
