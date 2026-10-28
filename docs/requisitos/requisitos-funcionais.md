@@ -118,5 +118,15 @@ Então o item é incluído na lista temporária de compras e o subtotal é atual
 RF12 - Finalização de Pedido (Checkout): O sistema deve processar a compra dos itens selecionados no carrinho, registrando o pedido 
 vinculado ao comprador e ao respectivo brechó.
 
+Cenário 12.1 (Finalização com Sucesso):
+
+Dado que o comprador possui itens no carrinho e está autenticado,
+Quando ele confirma o endereço de entrega, escolhe a forma de pagamento e clica em "Finalizar Pedido",
+Então o sistema gera o número do pedido, limpa o carrinho e envia o pedido para a fila de processamento do brechó vendedor.
+
 RF13 - Histórico de Pedidos: Tanto compradores quanto vendedores devem ter acesso a uma área com o histórico e o status dos pedidos realizados. 
-Busca e Filtros
+Cenário 13.1 (Caminho Feliz - Consulta de Histórico pelo Comprador):
+
+Dado que o comprador acessa a aba "Meus Pedidos",
+Quando a página carrega,
+Então o sistema exibe a listagem dos seus pedidos ordenados por data, mostrando o status (ex: "Aguardando Envio", "Entregue"), itens compondo cada pedido e valor total.
