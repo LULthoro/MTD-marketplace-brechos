@@ -13,11 +13,6 @@ Quando ele insere o nome "Ana Maria", e-mail "ana@email.com" e a senha "Senha@12
 Então o sistema realiza o cadastro com sucesso e o redireciona para a tela de login/boas-vindas.
 
 
-
-
-
-
-
 RF02 - Autenticação de Usuários: O sistema deve fornecer um mecanismo de login para que os usuários cadastrados acessem suas 
 respectivas contas com segurança. 
 
@@ -62,16 +57,24 @@ Então o sistema cadastra o brechó e vincula a loja ao perfil do vendedor.
 
 
 
-
-
-
-
 RF05 - Gerenciamento da Loja: O lojista deve conseguir editar as informações do seu brechó e gerenciar a vitrine de seus produtos.
+
+Cenário 5.1 (Atualização de Dados da Loja):
+
+Dado que o lojista deseja atualizar suas políticas de devolução,
+Quando acessa o painel do brechó, insere o novo texto e salva,
+Então a informação atualizada passa a ser exibida publicamente para os compradores na página da loja
 
 Produtos e Catálogo
 
 RF06 - Cadastro de Peças/Produtos: O lojista deve poder cadastrar novos itens de vestuário informando título, descrição detalhada, categoria, 
 tamanho, estado de conservação, preço e imagens ilustrativas.
+
+Cenário 6.1 (Publicação de Peça Unipessoal):
+
+Dado que o lojista acessa a aba "Novo Produto",
+Quando preenche os dados: "Jaqueta Jeans Anos 90", categoria "Casacos", tamanho "M", estado "Seminovo", preço R$ 120,00 e envia as fotos,
+Então a peça é salva e adicionada imediatamente à vitrine ativa da loja.
 
 RF07 - Atualização e Remoção de Produtos: O vendedor deve ter a capacidade de alterar os dados de um produto existente ou removê-lo do catálogo ativo.
 
