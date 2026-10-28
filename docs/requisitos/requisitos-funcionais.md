@@ -6,30 +6,37 @@ RF01 - Cadastro de Usuários: O sistema deve permitir o registro de novos usuár
 validando dados obrigatórios (como nome, email e senha) por meio de regras de validação específicas. 
 
 
-Cenário 1.1 ( - Cadastro de Sucesso):
+Cenário 1.1 (Cadastro de Sucesso):
 
 Dado que o visitante está na tela de cadastro,
-
 Quando ele insere o nome "Ana Maria", e-mail "ana@email.com" e a senha "Senha@123" (atendendo ao mínimo de 8 caracteres e 3 tipos de caracteres),
-
 Então o sistema realiza o cadastro com sucesso e o redireciona para a tela de login/boas-vindas.
+
 
 
 
 RF02 - Autenticação de Usuários: O sistema deve fornecer um mecanismo de login para que os usuários cadastrados acessem suas 
 respectivas contas com segurança. 
 
-Cenário 2.1 ( - Login Bem-Sucedido):
+
+Cenário 2.1 (Login Bem-Sucedido):
 
 Dado que o usuário possui conta cadastrada,
-
 Quando informa seu e-mail e senha corretos e clica em "Entrar",
-
 Então o sistema autentica a sessão e concede acesso às funcionalidades do seu perfil.
 
 
 
 RF03 - Gerenciamento de Perfil: O usuário deve poder consultar e atualizar as informações cadastrais do seu perfil.
+
+
+Cenário 3.1 (Edição de Perfil):
+
+Dado que o usuário está autenticado em sua conta,
+Quando ele navega até a seção "Meu Perfil", altera seu e-mail e clica em "Salvar Alterações",
+Então o sistema valida os novos dados e atualiza o cadastro com sucesso.
+
+
 
 Lojas / Brechós
 
