@@ -1,6 +1,6 @@
 REQUISITOS NAO FUNCIONAIS 
 
-RNF01 – Persistência Pluggável / Suporte a Múltiplos Motores (Arquitetura & Design)
+RNF01 – Persistência Plugável / Suporte a Múltiplos Motores (Arquitetura & Design)
 Descrição: A arquitetura do sistema deve suportar a alternância entre modos de persistência (em memória RAM para testes/desenvolvimento e banco de dados relacional SQLite para produção/persistência).
 
 Métrica/Critério: Implementação do padrão Repository com interfaces abstratas aplicadas a todas as entidades (Usuários, Lojas, Produtos e Pedidos), permitindo o chaveamento global do motor de dados no arranque da aplicação via parâmetro de inicialização (mvn compile exec:java "-Dexec.mainClass=mtd.Main" "-Dexec.args=bd").
