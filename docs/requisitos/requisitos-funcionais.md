@@ -96,6 +96,12 @@ BUSCA E FILTRO
 
 RF09 - Pesquisa de Produtos: Os usuários devem poder buscar peças específicas utilizando barra de pesquisa por palavras-chave.
 
+Cenário 9.1 (Caminho Feliz - Busca por Palavra-Chave):
+
+Dado que o comprador digita "Vestido Floral" na barra de busca,
+Quando confirma a pesquisa,
+Então o sistema exibe a lista de produtos cujos títulos ou descrições contenham o termo digitado.
+
 RF10 - Filtragem de Itens: O sistema deve disponibilizar filtros por faixa de preço, tamanho,categoria de vestuário e brechó de origem para facilitar a navegação do comprador. 
 
 
