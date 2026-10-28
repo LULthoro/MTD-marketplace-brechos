@@ -1,5 +1,7 @@
 package mtd.validator;
 
+import mtd.exception.ValidacaoException;
+
 public class UsuarioValidator {
 
     private static final int NOME_MAXIMO_CARACTERES = 12;
@@ -13,15 +15,15 @@ public class UsuarioValidator {
 
     public void validarNome(String nome) {
         if (nomeVazio(nome)) {
-            throw new IllegalArgumentException("O nome nao pode ser vazio.");
+            throw new ValidacaoException("O nome nao pode ser vazio.");
         }
         if (nomeExcedeCaracteresMaximos(nome)) {
-            throw new IllegalArgumentException(
+            throw new ValidacaoException(
                     "O nome nao pode ter mais de " + NOME_MAXIMO_CARACTERES + " caracteres."
             );
         }
         if (nomeContemNumeros(nome)) {
-            throw new IllegalArgumentException("O nome nao pode conter numeros.");
+            throw new ValidacaoException("O nome nao pode conter numeros.");
         }
     }
 
@@ -43,29 +45,29 @@ public class UsuarioValidator {
 
     public void validarSenha(String senha, String nome, String email) {
         if (senhaVazia(senha)) {
-            throw new IllegalArgumentException("A senha nao pode ser vazia.");
+            throw new ValidacaoException("A senha nao pode ser vazia.");
         }
         if (senhaAbaixoDoMinimo(senha)) {
-            throw new IllegalArgumentException(
+            throw new ValidacaoException(
                     "A senha deve ter no minimo " + SENHA_MINIMO_CARACTERES + " caracteres."
             );
         }
         if (senhaAcimaDoMaximo(senha)) {
-            throw new IllegalArgumentException(
+            throw new ValidacaoException(
                     "A senha deve ter no maximo " + SENHA_MAXIMO_CARACTERES + " caracteres."
             );
         }
         if (senhaComPoucosTiposDeCaracteres(senha)) {
-            throw new IllegalArgumentException(
+            throw new ValidacaoException(
                     "A senha deve conter ao menos " + SENHA_MINIMO_TIPOS_CARACTERES +
                     " dos seguintes tipos: maiusculas, minusculas, numeros, caracteres especiais (EX: ' ! @ e etc)."
             );
         }
         if (senhaIgualAoNome(senha, nome)) {
-            throw new IllegalArgumentException("A senha nao pode ser identica ao nome.");
+            throw new ValidacaoException("A senha nao pode ser identica ao nome.");
         }
         if (senhaIgualAoEmail(senha, email)) {
-            throw new IllegalArgumentException("A senha nao pode ser identica ao email.");
+            throw new ValidacaoException("A senha nao pode ser identica ao email.");
         }
     }
 
@@ -83,9 +85,9 @@ public class UsuarioValidator {
 
     private boolean senhaComPoucosTiposDeCaracteres(String senha) {
         int tipos = 0;
-        if (senha.matches(".*[A-Z].*"))                    tipos++;
-        if (senha.matches(".*[a-z].*"))                    tipos++;
-        if (senha.matches(".*\\d.*"))                      tipos++;
+        if (senha.matches(".*[A-Z].*"))                         tipos++;
+        if (senha.matches(".*[a-z].*"))                         tipos++;
+        if (senha.matches(".*\\d.*"))                           tipos++;
         if (senha.matches(".*[!@#$%^&*()_+\\-=\\[\\]{}|'].*")) tipos++;
         return tipos < SENHA_MINIMO_TIPOS_CARACTERES;
     }

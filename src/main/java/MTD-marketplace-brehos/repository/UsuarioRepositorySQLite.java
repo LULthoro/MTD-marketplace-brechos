@@ -1,5 +1,6 @@
 package mtd.repository;
 
+import mtd.exception.PersistenciaException;
 import mtd.model.Usuario;
 
 import java.sql.Connection;
@@ -28,12 +29,12 @@ public class UsuarioRepositorySQLite implements UsuarioRepository {
             stmt.execute(sql);
 
         } catch (SQLException e) {
-            System.err.println("[ERRO] Falha ao inicializar o banco de dados: " + e.getMessage());
+            throw new PersistenciaException("Falha ao inicializar o banco de dados.", e);
         }
     }
 
     @Override
-    public void adicionar(Usuario usuario) throws SQLException {
+    public void adicionar(Usuario usuario) throws PersistenciaException {
         String sql = "INSERT INTO usuarios(id, nome, email, senha) VALUES(?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(URL);
@@ -45,11 +46,16 @@ public class UsuarioRepositorySQLite implements UsuarioRepository {
             pstmt.setString(4, usuario.getSenha());
 
             pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new PersistenciaException(
+                    "Erro ao adicionar usuario '" + usuario.getNome() + "' no banco de dados.", e
+            );
         }
     }
 
     @Override
-    public List<Usuario> listarTodos() throws SQLException {
+    public List<Usuario> listarTodos() throws PersistenciaException {
         String sql = "SELECT id, nome, email, senha FROM usuarios";
         List<Usuario> usuarios = new ArrayList<>();
 
@@ -65,7 +71,11 @@ public class UsuarioRepositorySQLite implements UsuarioRepository {
                         rs.getString("senha")
                 ));
             }
+
+        } catch (SQLException e) {
+            throw new PersistenciaException("Erro ao listar usuarios do banco de dados.", e);
         }
+
         return usuarios;
     }
 }

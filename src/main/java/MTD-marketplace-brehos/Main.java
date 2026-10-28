@@ -1,5 +1,7 @@
 package mtd;
 
+import mtd.exception.PersistenciaException;
+import mtd.exception.ValidacaoException;
 import mtd.model.Usuario;
 import mtd.repository.UsuarioRepository;
 import mtd.repository.UsuarioRepositoryRam;
@@ -7,7 +9,6 @@ import mtd.repository.UsuarioRepositorySQLite;
 import mtd.service.UsuarioService;
 import mtd.validator.UsuarioValidator;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
@@ -28,17 +29,13 @@ public class Main {
         tentarAdicionarUsuario(usuarioService, new Usuario(2, "Maria",  "maria@email.com",  "Mar1a#Secret"));
 
         // Nome invalido
-        tentarAdicionarUsuario(usuarioService, new Usuario(3, "aldo",             "vazio@email.com",   "Senha@123"));
-        tentarAdicionarUsuario(usuarioService, new Usuario(4, "Lucas123",     "numeros@email.com", "Senha@123"));
-        tentarAdicionarUsuario(usuarioService, new Usuario(5, "NomeMuitoLongo","longo@email.com",  "Senha@123"));
+        tentarAdicionarUsuario(usuarioService, new Usuario(3, "aldo",          "vazio@email.com",   "Senha@123"));
+        tentarAdicionarUsuario(usuarioService, new Usuario(4, "Lucas123",      "numeros@email.com", "Senha@123"));
+        tentarAdicionarUsuario(usuarioService, new Usuario(5, "NomeMuitoLongo","longo@email.com",   "Senha@123"));
 
-        // Senha muito curta
+        // Senha invalida
         tentarAdicionarUsuario(usuarioService, new Usuario(6, "Pedro",  "pedro@email.com",  "Ab1@"));
-
-        // Senha com poucos tipos de caracteres (so minusculas)
         tentarAdicionarUsuario(usuarioService, new Usuario(7, "Ana",    "ana@email.com",     "somenteminusculas"));
-
-        // Senha identica ao email
         tentarAdicionarUsuario(usuarioService, new Usuario(8, "Carla",  "Ab1@cdef.gh",       "Ab1@cdef.gh"));
 
         System.out.println("\n=== USUARIOS CADASTRADOS COM SUCESSO ===\n");
@@ -48,17 +45,17 @@ public class Main {
             for (Usuario usuario : usuarios) {
                 System.out.println(usuario);
             }
-        } catch (SQLException e) {
-            System.err.println("[ERRO] Falha ao listar os usuários: " + e.getMessage());
+        } catch (PersistenciaException e) {
+            System.err.println("[ERRO] Falha ao listar os usuarios: " + e.getMessage());
         }
     }
 
     private static UsuarioRepository criarRepositorio(String modo) {
         if (modo.equalsIgnoreCase("bd")) {
-            System.out.println("[INFO] Iniciando com persistência em SQLite (BD)...");
+            System.out.println("[INFO] Iniciando com persistencia em SQLite (BD)...");
             return new UsuarioRepositorySQLite();
         }
-        System.out.println("[INFO] Iniciando com persistência em RAM...");
+        System.out.println("[INFO] Iniciando com persistencia em RAM...");
         return new UsuarioRepositoryRam();
     }
 
@@ -66,9 +63,9 @@ public class Main {
         try {
             usuarioService.adicionarUsuario(usuario);
             System.out.println("[OK]   Cadastrado: " + usuario.getNome());
-        } catch (IllegalArgumentException e) {
+        } catch (ValidacaoException e) {
             System.out.println("[ERRO] Rejeitado [" + usuario.getNome() + "] (Validacao): " + e.getMessage());
-        } catch (SQLException e) {
+        } catch (PersistenciaException e) {
             System.err.println("[ERRO] Rejeitado [" + usuario.getNome() + "] (Banco de Dados): " + e.getMessage());
         }
     }

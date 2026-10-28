@@ -1,5 +1,6 @@
 package mtd.repository;
 
+import mtd.exception.PersistenciaException;
 import mtd.model.Usuario;
 
 import java.util.ArrayList;
