@@ -35,7 +35,7 @@ Então o sistema valida os novos dados e atualiza o cadastro com sucesso.
 
 
 
-LOJAS /BRECHOS
+LOJAS / BRECHOS
 
 RF04 - Cadastro de Brechó: O usuário com perfil de vendedor deve poder cadastrar os dados do seu brechó
 (nome comercial, descrição, políticas de troca/envio).
@@ -44,11 +44,7 @@ Cenário 4.1 (Criação de Loja):
 
 Dado que o usuário vendedor ainda não possui loja cadastrada,
 Quando ele preenche o nome comercial "Vintage Club", descrição e políticas de entrega,
-Então o sistema cadastra o brechó e vincula a loja ao perfil do vendedor.Cenário 4.1 (Caminho Feliz - Criação de Loja):
-Dado que o usuário vendedor ainda não possui loja cadastrada,
-Quando ele preenche o nome comercial "Vintage Club", descrição e políticas de entrega,
 Então o sistema cadastra o brechó e vincula a loja ao perfil do vendedor.
-
 
 
 RF05 - Gerenciamento da Loja: O lojista deve conseguir editar as informações do seu brechó e gerenciar a vitrine de seus produtos.
@@ -104,7 +100,7 @@ Dado que o comprador está navegando no catálogo geral,
 Quando seleciona a categoria "Calças", tamanho "G" e faixa de preço "Até R$ 80,00",
 Então o sistema recarrega a exibição trazendo apenas os itens que cumprem simultaneamente todos os critérios aplicados.
 
-CARRINHOS E PEDIDOS 
+CARRINHO E PEDIDO
 
 RF11 - Gestão do Carrinho de Compras: O comprador deve poder adicionar ou remover produtos selecionados em seu carrinho de compras 
 antes de finalizar a transação.
