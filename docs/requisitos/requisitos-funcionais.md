@@ -5,11 +5,23 @@ USUARIOS E AUTENTICAÇÃO
 RF01 - Cadastro de Usuários: O sistema deve permitir o registro de novos usuários (compradores e vendedores/brechós), 
 validando dados obrigatórios (como nome, email e senha) por meio de regras de validação específicas. 
 
+Perfil Único de Conta: Todo usuário cadastrado possui uma conta única que permite atuar simultaneamente 
+como comprador e como vendedor, sem a necessidade de criar contas separadas ou fazer alternância (switch) de perfil.
 
-Cenário 1.1 (Cadastro de Sucesso):
+Validação de E-mail Único: O sistema garante a unicidade do e-mail no ato do cadastro. Tentar cadastrar um e-mail já existente gera rejeição imediata.
+
+
+Cenário 1.1 (Perfil Unificado):
+
 Dado que o visitante está na tela de cadastro,
-Quando ele insere o nome "Ana Maria", e-mail "ana@email.com" e a senha "Senha@123" (atendendo ao mínimo de 8 caracteres e 3 tipos de caracteres),
-Então o sistema realiza o cadastro com sucesso e o redireciona para a tela de login/boas-vindas.
+Quando ele insere o nome "Ana Maria", o e-mail "ana@email.com" e a senha "Senha@123",
+Então o sistema realiza o cadastro e libera o acesso tanto para comprar itens quanto para cadastrar anúncios/lojas.
+
+Cenário 1.2 (E-mail Já Cadastrado):
+
+Dado que o e-mail "ana@email.com" já está registrado no sistema,
+Quando outro visitante tenta se cadastrar com o mesmo e-mail,
+Então o sistema bloqueia a operação e exibe a mensagem: "E-mail já cadastrado no sistema."
 
 
 RF02 - Autenticação de Usuários: O sistema deve fornecer um mecanismo de login para que os usuários cadastrados acessem suas 
@@ -24,13 +36,23 @@ Então o sistema autentica a sessão e concede acesso às funcionalidades do seu
 
 RF03 - Gerenciamento de Perfil: O usuário deve poder consultar e atualizar as informações cadastrais do seu perfil.
 
+Campos Editáveis: O usuário pode atualizar exclusivamente o seu nome comercial/de exibição e o seu e-mail.
+O identificador do usuário (ID) e as chaves de histórico de pedidos não podem ser modificados.
+
+Tratamento de Alterações Inválidas: Se o usuário tentar alterar o e-mail para um endereço já utilizado por outra conta,
+ou informar um nome que viole as regras de validação (ex: conter números ou ultrapassar o limite),
+as alterações são descartadas e o estado anterior do perfil é mantido.
+
 
 Cenário 3.1 (Edição de Perfil):
 Dado que o usuário está autenticado em sua conta,
 Quando ele navega até a seção "Meu Perfil", altera seu e-mail e clica em "Salvar Alterações",
 Então o sistema valida os novos dados e atualiza o cadastro com sucesso.
 
-
+Cenário 3.2 (Tentativa de E-mail Duplicado no Perfil):
+Dado que o e-mail "novo@email.com" pertence a outro usuário,
+Quando o usuário logado tenta atualizar seu e-mail para "novo@email.com",
+Então o sistema recusa a edição e exibe a mensagem de erro: "Este e-mail já está em uso por outra conta."
 
 LOJAS / BRECHOS
 
@@ -110,7 +132,7 @@ Então o sistema gera o número do pedido, limpa o carrinho e envia o pedido par
 
 RF13 - Histórico de Pedidos: Tanto compradores quanto vendedores devem ter acesso a uma área com o histórico e o status dos pedidos realizados. 
 
-Cenário 13.1 (Caminho Feliz - Consulta de Histórico pelo Comprador):
+Cenário 13.1 (Consulta de Histórico pelo Comprador):
 Dado que o comprador acessa a aba "Meus Pedidos",
 Quando a página carrega,
 Então o sistema exibe a listagem dos seus pedidos ordenados por data, mostrando o status (ex: "Aguardando Envio", "Entregue"), itens compondo cada pedido e valor total.
