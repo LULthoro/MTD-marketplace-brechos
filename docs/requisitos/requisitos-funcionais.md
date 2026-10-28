@@ -1,6 +1,6 @@
 REQUISITOS FUNCIONAIS 
 
-Usuários e Autenticação 
+USUARIOS E AUTENTICAÇAO
 
 RF01 - Cadastro de Usuários: O sistema deve permitir o registro de novos usuários (compradores e vendedores/brechós), 
 validando dados obrigatórios (como nome, email e senha) por meio de regras de validação específicas. 
@@ -24,9 +24,6 @@ Quando informa seu e-mail e senha corretos e clica em "Entrar",
 Então o sistema autentica a sessão e concede acesso às funcionalidades do seu perfil.
 
 
-
-
-
 RF03 - Gerenciamento de Perfil: O usuário deve poder consultar e atualizar as informações cadastrais do seu perfil.
 
 
@@ -38,10 +35,7 @@ Então o sistema valida os novos dados e atualiza o cadastro com sucesso.
 
 
 
-
-
-
-Lojas / Brechós
+LOJAS /BRECHOS
 
 RF04 - Cadastro de Brechó: O usuário com perfil de vendedor deve poder cadastrar os dados do seu brechó
 (nome comercial, descrição, políticas de troca/envio).
@@ -65,7 +59,7 @@ Dado que o lojista deseja atualizar suas políticas de devolução,
 Quando acessa o painel do brechó, insere o novo texto e salva,
 Então a informação atualizada passa a ser exibida publicamente para os compradores na página da loja
 
-Produtos e Catálogo
+PRODUTOS E CATALOGO 
 
 RF06 - Cadastro de Peças/Produtos: O lojista deve poder cadastrar novos itens de vestuário informando título, descrição detalhada, categoria, 
 tamanho, estado de conservação, preço e imagens ilustrativas.
@@ -102,10 +96,15 @@ Dado que o comprador digita "Vestido Floral" na barra de busca,
 Quando confirma a pesquisa,
 Então o sistema exibe a lista de produtos cujos títulos ou descrições contenham o termo digitado.
 
-RF10 - Filtragem de Itens: O sistema deve disponibilizar filtros por faixa de preço, tamanho,categoria de vestuário e brechó de origem para facilitar a navegação do comprador. 
+RF10 - Filtragem de Itens: O sistema deve disponibilizar filtros por faixa de preço, tamanho,categoria de vestuário e brechó de origem para facilitar a navegação do comprador.
 
+Cenário 10.1 (Aplicação de Filtros Combinados):
 
-Carrinho e Pedidos
+Dado que o comprador está navegando no catálogo geral,
+Quando seleciona a categoria "Calças", tamanho "G" e faixa de preço "Até R$ 80,00",
+Então o sistema recarrega a exibição trazendo apenas os itens que cumprem simultaneamente todos os critérios aplicados.
+
+CARRINHOS E PEDIDOS 
 
 RF11 - Gestão do Carrinho de Compras: O comprador deve poder adicionar ou remover produtos selecionados em seu carrinho de compras 
 antes de finalizar a transação.
