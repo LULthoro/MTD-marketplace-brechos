@@ -15,6 +15,9 @@ Então o sistema realiza o cadastro com sucesso e o redireciona para a tela de l
 
 
 
+
+
+
 RF02 - Autenticação de Usuários: O sistema deve fornecer um mecanismo de login para que os usuários cadastrados acessem suas 
 respectivas contas com segurança. 
 
@@ -24,6 +27,8 @@ Cenário 2.1 (Login Bem-Sucedido):
 Dado que o usuário possui conta cadastrada,
 Quando informa seu e-mail e senha corretos e clica em "Entrar",
 Então o sistema autentica a sessão e concede acesso às funcionalidades do seu perfil.
+
+
 
 
 
@@ -38,10 +43,28 @@ Então o sistema valida os novos dados e atualiza o cadastro com sucesso.
 
 
 
+
+
+
 Lojas / Brechós
 
 RF04 - Cadastro de Brechó: O usuário com perfil de vendedor deve poder cadastrar os dados do seu brechó
 (nome comercial, descrição, políticas de troca/envio).
+
+Cenário 4.1 (Criação de Loja):
+
+Dado que o usuário vendedor ainda não possui loja cadastrada,
+Quando ele preenche o nome comercial "Vintage Club", descrição e políticas de entrega,
+Então o sistema cadastra o brechó e vincula a loja ao perfil do vendedor.Cenário 4.1 (Caminho Feliz - Criação de Loja):
+Dado que o usuário vendedor ainda não possui loja cadastrada,
+Quando ele preenche o nome comercial "Vintage Club", descrição e políticas de entrega,
+Então o sistema cadastra o brechó e vincula a loja ao perfil do vendedor.
+
+
+
+
+
+
 
 RF05 - Gerenciamento da Loja: O lojista deve conseguir editar as informações do seu brechó e gerenciar a vitrine de seus produtos.
 
