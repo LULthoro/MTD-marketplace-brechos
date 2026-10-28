@@ -36,3 +36,8 @@ RNF05 — Proteção e Criptografia de Senhas (Segurança)
 Descrição: As senhas dos usuários nunca devem ser armazenadas em texto simples (plain text) na camada de persistência.
 
 Métrica/Critério: As senhas devem passar por algoritmo de hashing seguro (ex: BCrypt, Argon2 ou SHA-256 com salt) antes de serem gravadas no banco de dados SQLite ou em memória.
+
+RNF06 — Integridade e Imutabilidade de Pedidos (Integridade de Dados)
+Descrição: Após o fechamento de um pedido (Checkout), os dados do histórico de transações tornam-se imutáveis.
+
+Métrica/Critério: Registros de pedidos finalizados não podem ser alterados ou apagados por compradores ou vendedores. Eventuais alterações de status (ex: "Enviado", "Entregue") devem ser registradas em histórico de auditoria do próprio pedido.
