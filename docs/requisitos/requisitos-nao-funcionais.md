@@ -31,3 +31,8 @@ Descrição: O código-fonte deve ser organizado segundo os princípios do Spec-
 Métrica/Critério:
 Alterações nas regras de negócio/validação não devem impactar a camada de persistência
 e vice-versa (baixo acoplamento e alta coesão).
+
+RNF05 — Proteção e Criptografia de Senhas (Segurança)
+Descrição: As senhas dos usuários nunca devem ser armazenadas em texto simples (plain text) na camada de persistência.
+
+Métrica/Critério: As senhas devem passar por algoritmo de hashing seguro (ex: BCrypt, Argon2 ou SHA-256 com salt) antes de serem gravadas no banco de dados SQLite ou em memória.
