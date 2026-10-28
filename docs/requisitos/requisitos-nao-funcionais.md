@@ -1,3 +1,11 @@
+REQUISITOS NAO FUNCIONAIS 
+
+RNF01 – Persistência Pluggável / Suporte a Múltiplos Motores (Arquitetura & Design)
+Descrição: A arquitetura do sistema deve suportar alternância entre modos de persistência (em memória RAM para testes/desenvolvimento e banco de dados relacional SQLite para execução em ambiente com persistência).
+
+Métrica/Critério: Implementação utilizando o padrão Repository/Interfaces (UsuarioRepositoryRam e UsuarioRepositorySQLite),
+podendo ser chaveado via argumento de inicialização (mvn ... -Dexec.args="bd").
+
 RNF02 – Regras Rigorosas de Validação de Dados (Segurança / Usabilidade)
 
 Descrição: As entradas de dados cadastrais devem ser validadas no nível da aplicação antes de qualquer tentativa de persistência.
