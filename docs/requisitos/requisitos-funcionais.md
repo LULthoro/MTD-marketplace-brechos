@@ -109,6 +109,12 @@ CARRINHOS E PEDIDOS
 RF11 - Gestão do Carrinho de Compras: O comprador deve poder adicionar ou remover produtos selecionados em seu carrinho de compras 
 antes de finalizar a transação.
 
+Cenário 11.1 (Adição ao Carrinho):
+
+Dado que o comprador está na página do detalhe de um produto,
+Quando clica no botão "Adicionar ao Carrinho",
+Então o item é incluído na lista temporária de compras e o subtotal é atualizado.
+
 RF12 - Finalização de Pedido (Checkout): O sistema deve processar a compra dos itens selecionados no carrinho, registrando o pedido 
 vinculado ao comprador e ao respectivo brechó.
 
