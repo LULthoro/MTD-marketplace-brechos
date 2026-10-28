@@ -12,3 +12,9 @@ A senha deve conter obrigatoriamente pelo menos 3 dos seguintes 4 tipos de carac
 letras minúsculas, números e caracteres especiais.
 
 A senha não pode ser idêntica ao nome nem ao e-mail informado.
+
+RNF03 – Desempenho e Tempo de Resposta
+Descrição: As operações de consulta e filtragem do catálogo de produtos devem apresentar rápida resposta.
+
+Métrica/Critério: Consultas à base local SQLite e em memória devem ser executadas 
+em tempo inferior a 200 ms em condições normais de uso.
