@@ -1,13 +1,10 @@
 package mtd.controller;
 
+import mtd.factory.RepositoryFactory;
 import mtd.model.Produto;
 import mtd.model.Usuario;
 import mtd.repository.ProdutoRepository;
-import mtd.repository.ProdutoRepositoryRAM;
-import mtd.repository.ProdutoRepositorySQLite;
 import mtd.repository.UsuarioRepository;
-import mtd.repository.UsuarioRepositoryRam;
-import mtd.repository.UsuarioRepositorySQLite;
 import mtd.service.ProdutoService;
 import mtd.service.UsuarioService;
 import mtd.validator.ProdutoValidator;
@@ -39,17 +36,12 @@ public class FacadeSingletonController {
         return instance;
     }
 
-    public static FacadeSingletonController getInstance(String modo) {
+    public static FacadeSingletonController getInstance(RepositoryFactory repositoryFactory) {
         if (instance == null) {
             synchronized (FacadeSingletonController.class) {
                 if (instance == null) {
-                    boolean usarBanco = "bd".equalsIgnoreCase(modo);
-                    UsuarioRepository usuarioRepo = usarBanco
-                            ? new UsuarioRepositorySQLite()
-                            : new UsuarioRepositoryRam();
-                    ProdutoRepository produtoRepo = usarBanco
-                            ? new ProdutoRepositorySQLite()
-                            : new ProdutoRepositoryRAM();
+                    UsuarioRepository usuarioRepo = repositoryFactory.criarUsuarioRepository();
+                    ProdutoRepository produtoRepo = repositoryFactory.criarProdutoRepository();
 
                     UsuarioService uService = new UsuarioService(usuarioRepo, new UsuarioValidator());
                     ProdutoService pService = new ProdutoService(produtoRepo, new ProdutoValidator());
@@ -59,6 +51,10 @@ public class FacadeSingletonController {
             }
         }
         return instance;
+    }
+
+    public static FacadeSingletonController getInstance(String modo) {
+        return getInstance(RepositoryFactory.selecionarFactory(modo));
     }
 
     public static FacadeSingletonController getInstance() {

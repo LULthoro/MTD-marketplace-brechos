@@ -1,6 +1,7 @@
-package mtd.repository;
+package mtd.infra.persistence.ram;
 
 import mtd.model.Produto;
+import mtd.repository.ProdutoRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,4 +58,3 @@ public class ProdutoRepositoryRAM implements ProdutoRepository {
         return produtos.size();
     }
 }
-
