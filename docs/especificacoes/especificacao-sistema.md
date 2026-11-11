@@ -24,3 +24,4 @@ O projeto **MTD Marketplace de Brechós** implementa uma arquitetura em camadas 
 5. **Template Method (`mtd.service.relatorio`):**
    - [`RelatorioEstatisticaAcessoTemplate`](file:///home/lucas/MTD-marketplace-brechos/src/main/java/mtd/service/relatorio/RelatorioEstatisticaAcessoTemplate.java) (*AbstractClass*): implementa o método template `final gerarRelatorio(...)` que consolida estatísticas de acesso dos usuários no sistema (total de usuários, total de acessos, média de acessos por usuário e usuário mais ativo).
    - [`RelatorioAcessoHTML`](file:///home/lucas/MTD-marketplace-brechos/src/main/java/mtd/service/relatorio/RelatorioAcessoHTML.java) e [`RelatorioAcessoPDF`](file:///home/lucas/MTD-marketplace-brechos/src/main/java/mtd/service/relatorio/RelatorioAcessoPDF.java) (*ConcreteClasses*): especializam os passos abstratos `montarCabecalho`, `montarCorpoEstatisticas` e `montarRodape` para produzir relatórios nos formatos HTML e PDF.
+

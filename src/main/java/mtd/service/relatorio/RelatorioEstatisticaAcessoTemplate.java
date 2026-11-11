@@ -53,3 +53,4 @@ public abstract class RelatorioEstatisticaAcessoTemplate {
 
     protected abstract String montarRodape(int totalEntidades);
 }
+

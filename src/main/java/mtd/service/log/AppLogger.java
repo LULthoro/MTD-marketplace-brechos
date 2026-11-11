@@ -8,3 +8,4 @@ public interface AppLogger {
 
     void erro(String operacao, String mensagem, Throwable causa);
 }
+

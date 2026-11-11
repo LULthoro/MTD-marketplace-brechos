@@ -48,3 +48,4 @@ public class RelatorioAcessoPDF extends RelatorioEstatisticaAcessoTemplate {
                 "%%EOF";
     }
 }
+

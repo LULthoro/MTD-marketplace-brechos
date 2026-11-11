@@ -18,3 +18,4 @@ public class SQLiteRepositoryFactory implements RepositoryFactory {
         return new ProdutoRepositorySQLite();
     }
 }
+

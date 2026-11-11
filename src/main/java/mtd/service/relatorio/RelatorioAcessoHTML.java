@@ -61,3 +61,4 @@ public class RelatorioAcessoHTML extends RelatorioEstatisticaAcessoTemplate {
                 "</html>";
     }
 }
+

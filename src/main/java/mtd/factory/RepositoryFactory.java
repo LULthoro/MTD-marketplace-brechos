@@ -18,3 +18,4 @@ public interface RepositoryFactory {
         return new RamRepositoryFactory();
     }
 }
+

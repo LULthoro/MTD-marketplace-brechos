@@ -18,3 +18,4 @@ public class EntityFactory {
         return new Produto(id, titulo, descricao, preco, tamanho, usuarioId);
     }
 }
+

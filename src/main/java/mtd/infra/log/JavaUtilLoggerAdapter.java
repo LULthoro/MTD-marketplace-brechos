@@ -60,3 +60,4 @@ public class JavaUtilLoggerAdapter implements AppLogger {
         adaptee.log(Level.SEVERE, String.format("[%s] %s%s", operacao, mensagem, detalheCausa));
     }
 }
+

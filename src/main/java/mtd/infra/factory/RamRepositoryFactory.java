@@ -18,3 +18,4 @@ public class RamRepositoryFactory implements RepositoryFactory {
         return new ProdutoRepositoryRAM();
     }
 }
+

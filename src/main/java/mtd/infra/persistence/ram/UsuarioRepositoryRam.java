@@ -45,3 +45,4 @@ public class UsuarioRepositoryRam implements UsuarioRepository {
         return usuarios.size();
     }
 }
+
