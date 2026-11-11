@@ -55,6 +55,14 @@ public class UsuarioService {
         logger.info("DELETAR_USUARIO", "Usuario ID " + id + " removido.");
     }
 
+    public void registrarAcesso(int usuarioId) {
+        usuarioRepository.buscarPorId(usuarioId).ifPresent(usuario -> {
+            usuario.registrarAcesso();
+            usuarioRepository.atualizar(usuario);
+            logger.info("ACESSO_USUARIO", "Acesso contabilizado para " + usuario.getNome() + " (total=" + usuario.getQuantidadeAcessos() + ")");
+        });
+    }
+
     public int contarUsuarios() {
         return usuarioRepository.contar();
     }

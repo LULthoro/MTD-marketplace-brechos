@@ -7,6 +7,9 @@ import mtd.repository.ProdutoRepository;
 import mtd.repository.UsuarioRepository;
 import mtd.service.ProdutoService;
 import mtd.service.UsuarioService;
+import mtd.service.relatorio.RelatorioAcessoHTML;
+import mtd.service.relatorio.RelatorioAcessoPDF;
+import mtd.service.relatorio.RelatorioEstatisticaAcessoTemplate;
 import mtd.validator.ProdutoValidator;
 import mtd.validator.UsuarioValidator;
 
@@ -62,7 +65,7 @@ public class FacadeSingletonController {
     }
 
     // -------------------------------------------------------------------------
-    // Operacoes CRUD de Usuario (Facade)
+    // Operacoes CRUD e Acesso de Usuario (Facade)
     // -------------------------------------------------------------------------
 
     public void adicionarUsuario(Usuario usuario) {
@@ -83,6 +86,10 @@ public class FacadeSingletonController {
 
     public void deletarUsuario(int id) {
         usuarioService.deletarUsuario(id);
+    }
+
+    public void registrarAcessoUsuario(int id) {
+        usuarioService.registrarAcesso(id);
     }
 
     // -------------------------------------------------------------------------
@@ -110,10 +117,22 @@ public class FacadeSingletonController {
     }
 
     // -------------------------------------------------------------------------
-    // Metricas consolidadas (Facade)
+    // Metricas consolidadas e Relatorios (Template Method via Facade)
     // -------------------------------------------------------------------------
 
     public int getQuantidadeTotalEntidadesCadastradas() {
         return usuarioService.contarUsuarios() + produtoService.contarProdutos();
+    }
+
+    public String gerarRelatorioEstatisticaAcesso(RelatorioEstatisticaAcessoTemplate template) {
+        return template.gerarRelatorio(usuarioService.listarTodosUsuarios(), produtoService.contarProdutos());
+    }
+
+    public String gerarRelatorioAcessoHTML() {
+        return gerarRelatorioEstatisticaAcesso(new RelatorioAcessoHTML());
+    }
+
+    public String gerarRelatorioAcessoPDF() {
+        return gerarRelatorioEstatisticaAcesso(new RelatorioAcessoPDF());
     }
 }
