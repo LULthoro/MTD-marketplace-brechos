@@ -34,4 +34,3 @@ RNF06 — Integridade e Imutabilidade de Pedidos (Integridade de Dados)
 Descrição: Após a finalização de uma compra (Checkout), os dados financeiros e os itens do histórico de transações tornam-se imutáveis.
 
 Métrica/Critério: Registros de pedidos finalizados (itens, preços unitários e comprador) não podem ser alterados ou excluídos. Alterações de fluxo operacionais (ex: transição de status para "Enviado" ou "Entregue") devem ser registradas exclusivamente no histórico de auditoria do pedido.
-

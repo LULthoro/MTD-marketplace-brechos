@@ -136,4 +136,3 @@ Cenário 13.1 (Consulta de Histórico pelo Comprador):
 Dado que o comprador acessa a aba "Meus Pedidos",
 Quando a página carrega,
 Então o sistema exibe a listagem dos seus pedidos ordenados por data, mostrando o status (ex: "Aguardando Envio", "Entregue"), itens compondo cada pedido e valor total.
-
