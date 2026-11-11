@@ -1,94 +1,93 @@
 # Arquitetura do Sistema — Marketplace de Brechós
 
-## 1. Visão geral
+## 1. Visão Geral
 
-O Marketplace de Brechós é desenvolvido em Java 21 gerenciado por Maven, seguindo a metodologia **Spec-Driven Development (SDD)**.
+O **Marketplace de Brechós** é desenvolvido em Java 21 gerenciado por Maven, seguindo a metodologia **Spec-Driven Development (SDD)**.
 
-A arquitetura do sistema é organizada em camadas desacopladas, separando as responsabilidades de **Apresentação (`Main`)**, **Coordenação de Controle (`FacadeSingletonController`)**, **Regras de Negócio e Validação (`Service` e `Validator`)**, **Persistência Polimórfica (`Repository` RAM/SQLite)** e **Entidades de Domínio (`Model`)**.
+A arquitetura separa claramente as camadas de **Apresentação (`Main`)**, **Controle/Fachada (`controller`)**, **Negócio (`service`, `validator`, `repository`, `factory`, `model`)** e **Infraestrutura (`infra.persistence.ram`, `infra.persistence.sqlite`, `infra.factory`, `infra.log`)**.
 
 ---
 
-# 2. Arquitetura em camadas (Até a Sprint 3)
-
-O sistema encontra-se estruturado nas seguintes camadas:
+# 2. Arquitetura em Camadas (`Business` vs `Infra`)
 
 ```text
-┌───────────────────────────────────────────┐
-│               Apresentação                │
-│                   Main                    │
-└─────────────────────┬─────────────────────┘
-                      │
-                      ▼
-┌───────────────────────────────────────────┐
-│          Controller (Facade/Singleton)    │
-│         FacadeSingletonController         │
-└──────────┬─────────────────────┬──────────┘
-           │                     │
-           ▼                     ▼
-┌─────────────────────┐ ┌───────────────────┐
-│   UsuarioService    │ │  ProdutoService   │
-│ + UsuarioValidator  │ │ + ProdutoValidator│
-└──────────┬──────────┘ └────────┬──────────┘
-           │                     │
-           ▼                     ▼
-┌─────────────────────┐ ┌───────────────────┐
-│  UsuarioRepository  │ │ ProdutoRepository │
-│   (RAM / SQLite)    │ │  (RAM / SQLite)   │
-└──────────┬──────────┘ └────────┬──────────┘
-           │                     │
-           ▼                     ▼
-┌─────────────────────┐ ┌───────────────────┐
-│       Usuario       │ │      Produto      │
-│   (Entidade Model)  │ │  (Entidade Model) │
-└─────────────────────┘ └───────────────────┘
+┌───────────────────────────────────────────────────────────────────┐
+│                         APRESENTAÇÃO (CLI)                        │
+│                              mtd.Main                             │
+└─────────────────────────────────┬─────────────────────────────────┘
+                                  │
+                                  ▼
+┌───────────────────────────────────────────────────────────────────┐
+│               CAMADA DE CONTROLE (Facade + Singleton)             │
+│                  mtd.controller.FacadeSingletonController         │
+└───────────┬─────────────────────┼─────────────────────┬───────────┘
+            │                     │                     │
+            ▼                     ▼                     ▼
+┌─────────────────────┐ ┌───────────────────┐ ┌─────────────────────┐
+│   CAMADA BUSINESS   │ │  CAMADA BUSINESS  │ │   CAMADA BUSINESS   │
+│   UsuarioService    │ │  ProdutoService   │ │   Template Method   │
+│ + UsuarioValidator  │ │ + ProdutoValidator│ │ RelatorioAcessoHTML │
+│                     │ │                   │ │ RelatorioAcessoPDF  │
+└───────────┬─────────┘ └─────────┬─────────┘ └─────────────────────┘
+            │                     │
+            ▼                     ▼
+┌───────────────────────────────────────────┐ ┌─────────────────────┐
+│        CONTRATOS DE NEGÓCIO (Interfaces)  │ │   ADAPTER TARGET    │
+│    UsuarioRepository / ProdutoRepository  │ │      AppLogger      │
+│             RepositoryFactory             │ └──────────┬──────────┘
+└─────────────────────┬─────────────────────┘            │
+                      │                                  ▼
+                      ▼                       ┌─────────────────────┐
+┌───────────────────────────────────────────┐ │    CAMADA INFRA     │
+│        CAMADA INFRA (Persistência)        │ │JavaUtilLoggerAdapter│
+│  RamRepositoryFactory / SQLiteRepoFactory │ │  (Adaptee: Logger)  │
+│  UsuarioRepositoryRam / SQLite            │ └─────────────────────┘
+│  ProdutoRepositoryRAM / SQLite            │
+└───────────────────────────────────────────┘
 ```
 
 ---
 
-# 3. Diagrama de Classes de Análise (Fronteira, Controle e Entidade — Sprint 3)
+# 3. Catálogo de Padrões de Projeto Utilizados no Sistema
 
-O diagrama abaixo modela o sistema até a **Sprint 3** seguindo o padrão de análise **BCE (*Boundary, Control, Entity* — Fronteira, Controle e Entidade)**, contemplando:
-- **CRUD completo das duas entidades (`Usuario` e `Produto`)**;
-- Padrões de projeto **Singleton** (*thread-safe double-checked locking*) e **Facade** em `FacadeSingletonController`;
-- Tratamento padronizado de exceções de domínio (`ValidationException` e `DatabaseOperationException`).
+| # | Padrão de Projeto | Categoria | Classes Participantes no Projeto | Papel / Justificativa Arquitetural |
+|---|---|---|---|---|
+| **1** | **Singleton** | Criacional (GoF) | `FacadeSingletonController` | Garante instância única e *thread-safe* (*Double-Checked Locking* com `volatile`) do controlador central da aplicação. |
+| **2** | **Facade** | Estrutural (GoF) | `FacadeSingletonController` | Unifica o acesso a `UsuarioService`, `ProdutoService`, geração de relatórios (`RelatorioEstatisticaAcessoTemplate`) e métricas globais (`getQuantidadeTotalEntidadesCadastradas()`). |
+| **3** | **Repository** | Arquitetural / Persistência | `UsuarioRepository`, `ProdutoRepository` (Contratos)<br>`UsuarioRepositoryRam`, `ProdutoRepositoryRAM`, `UsuarioRepositorySQLite`, `ProdutoRepositorySQLite` (`infra`) | Isola a camada `business` dos detalhes de armazenamento em memória (`ConcurrentHashMap`) ou banco relacional (`SQLite`). |
+| **4** | **Abstract Factory & Factory Method** | Criacional (GoF) | `RepositoryFactory` (*Abstract Factory + Factory Method* `selecionarFactory`), `RamRepositoryFactory`, `SQLiteRepositoryFactory` (*Concrete Factories*), `EntityFactory` (*Factory Method*) | Cria famílias de repositórios compatíveis (`RAM` ou `SQLite`) e instancia entidades (`Usuario`, `Produto`) sem acoplar o cliente às classes concretas de `infra`. |
+| **5** | **Adapter** | Estrutural (GoF) | `AppLogger` (*Target*), `JavaUtilLoggerAdapter` (*Adapter*), `java.util.logging.Logger` (*Adaptee*) | Converte a interface da biblioteca de log externa (`java.util.logging.Logger`) para o contrato de domínio `AppLogger` consumido pelos `Services`. |
+| **6** | **Template Method** | Comportamental (GoF) | `RelatorioEstatisticaAcessoTemplate` (*AbstractClass*), `RelatorioAcessoHTML`, `RelatorioAcessoPDF` (*ConcreteClasses*) | Define o esqueleto fixo (`final gerarRelatorio`) do cálculo de estatísticas de acesso dos usuários, delegando a formatação de cabeçalho, corpo e rodapé para as subclasses `HTML` e `PDF`. |
 
-## 3.1 Responsabilidades por Estereótipo
+---
 
-- **`<<Fronteira>>` (*Boundary*):**
-  - **Interface com o Usuário (CLI):** `Main` interpreta o modo de inicialização (`ram` ou `bd`), aciona a fachada e apresenta os resultados no console.
-  - **Interface com Persistência Externa / SGBD:** `UsuarioRepository` e `ProdutoRepository` (com implementações `RAM` em `ConcurrentHashMap` e `SQLite` via JDBC) isolam a comunicação com o meio de armazenamento.
-- **`<<Controle>>` (*Control*):**
-  - **Coordenação Central (Facade + Singleton):** `FacadeSingletonController` unifica todas as operações CRUD de `UsuarioService` e `ProdutoService`, além de consolidar métricas (`getQuantidadeTotalEntidadesCadastradas()`).
-  - **Regras de Negócio e Validação:** `UsuarioService`, `ProdutoService`, `UsuarioValidator` e `ProdutoValidator` coordenam os fluxos e lançam `ValidationException` quando regras de negócio são violadas.
-- **`<<Entidade>>` (*Entity*):**
-  - **Domínio:** `Usuario` e `Produto` representam os objetos persistentes do marketplace e seu relacionamento (`1 Usuario` possui `0..* Produto` via `usuarioId`).
-
-## 3.2 Diagrama UML (Mermaid)
+# 4. Diagrama de Classes Completo com Identificação dos Padrões de Projeto (Mermaid)
 
 ```mermaid
 classDiagram
     direction TB
 
     %% ==========================================
-    %% CAMADA DE FRONTEIRA (BOUNDARY) - INTERACAO
+    %% FRONTEIRA / CLIENTE
     %% ==========================================
     class Main {
-        <<Fronteira>>
+        <<Fronteira / Client>>
         +main(String[] args)$ void
         -tentarAdicionarUsuario(FacadeSingletonController, Usuario)$ void
         -tentarCadastrarProduto(FacadeSingletonController, Produto)$ void
     }
 
     %% ==========================================
-    %% CAMADA DE CONTROLE (CONTROL)
+    %% PADROES FACADE + SINGLETON
     %% ==========================================
     class FacadeSingletonController {
-        <<Controle / Facade & Singleton>>
+        <<Facade / Singleton>>
         -instance : FacadeSingletonController$
         -usuarioService : UsuarioService
         -produtoService : ProdutoService
         -FacadeSingletonController(UsuarioService, ProdutoService)
         +getInstance(UsuarioService, ProdutoService)$ FacadeSingletonController
+        +getInstance(RepositoryFactory)$ FacadeSingletonController
         +getInstance(String modo)$ FacadeSingletonController
         +getInstance()$ FacadeSingletonController
         +adicionarUsuario(Usuario usuario) void
@@ -96,30 +95,68 @@ classDiagram
         +listarTodosUsuarios() List~Usuario~
         +atualizarUsuario(Usuario usuario) void
         +deletarUsuario(int id) void
+        +registrarAcessoUsuario(int id) void
         +cadastrarProduto(Produto produto) Produto
         +buscarProdutoPorId(Long id) Optional~Produto~
         +listarTodosProdutos() List~Produto~
         +atualizarProduto(Produto produto) void
         +deletarProduto(Long id) void
         +getQuantidadeTotalEntidadesCadastradas() int
+        +gerarRelatorioEstatisticaAcesso(RelatorioEstatisticaAcessoTemplate) String
+        +gerarRelatorioAcessoHTML() String
+        +gerarRelatorioAcessoPDF() String
     }
 
+    %% ==========================================
+    %% PADRAO ABSTRACT FACTORY & FACTORY METHOD
+    %% ==========================================
+    class RepositoryFactory {
+        <<AbstractFactory / FactoryMethod>>
+        +criarUsuarioRepository() UsuarioRepository
+        +criarProdutoRepository() ProdutoRepository
+        +selecionarFactory(String modo)$ RepositoryFactory
+    }
+
+    class RamRepositoryFactory {
+        <<ConcreteFactory>>
+        +criarUsuarioRepository() UsuarioRepository
+        +criarProdutoRepository() ProdutoRepository
+    }
+
+    class SQLiteRepositoryFactory {
+        <<ConcreteFactory>>
+        +criarUsuarioRepository() UsuarioRepository
+        +criarProdutoRepository() ProdutoRepository
+    }
+
+    class EntityFactory {
+        <<FactoryMethod>>
+        +criarUsuario(int id, String nome, String email, String senha)$ Usuario
+        +criarProduto(Long id, String titulo, String descricao, BigDecimal preco, String tamanho, Long usuarioId)$ Produto
+    }
+
+    %% ==========================================
+    %% CAMADA BUSINESS (SERVICES & VALIDATORS)
+    %% ==========================================
     class UsuarioService {
-        <<Controle>>
+        <<Controle / Business>>
         -usuarioRepository : UsuarioRepository
         -usuarioValidator : UsuarioValidator
+        -logger : AppLogger
         +adicionarUsuario(Usuario usuario) void
         +buscarPorId(int id) Optional~Usuario~
         +listarTodosUsuarios() List~Usuario~
         +atualizarUsuario(Usuario usuario) void
         +deletarUsuario(int id) void
+        +registrarAcesso(int usuarioId) void
         +contarUsuarios() int
     }
 
     class ProdutoService {
-        <<Controle>>
+        <<Controle / Business>>
         -produtoRepository : ProdutoRepository
         -produtoValidator : ProdutoValidator
+        -logger : AppLogger
         +cadastrarProduto(Produto produto) Produto
         +buscarPorId(Long id) Optional~Produto~
         +listarTodosProdutos() List~Produto~
@@ -129,40 +166,74 @@ classDiagram
     }
 
     class UsuarioValidator {
-        <<Controle>>
-        -NOME_MAXIMO_CARACTERES : int$
-        -SENHA_MINIMO_CARACTERES : int$
-        -SENHA_MAXIMO_CARACTERES : int$
-        -SENHA_MINIMO_TIPOS_CARACTERES : int$
+        <<Controle / Validator>>
         +validar(Usuario usuario) void
         +validarNome(String nome) void
         +validarSenha(String senha, String nome, String email) void
     }
 
     class ProdutoValidator {
-        <<Controle>>
+        <<Controle / Validator>>
         +validar(Produto produto) void
         +validarTitulo(String titulo) void
         +validarPreco(BigDecimal preco) void
     }
 
-    class ValidationException {
-        <<Exception>>
-        +ValidationException(String message)
-        +ValidationException(String message, Throwable cause)
+    %% ==========================================
+    %% PADRAO TEMPLATE METHOD (RELATORIOS DE ACESSO)
+    %% ==========================================
+    class RelatorioEstatisticaAcessoTemplate {
+        <<TemplateMethod / AbstractClass>>
+        +gerarRelatorio(List~Usuario~ usuarios, int totalProdutos) String
+        -calcularTotalAcessos(List~Usuario~ usuarios) int
+        -identificarUsuarioMaisAtivo(List~Usuario~ usuarios) String
+        #montarCabecalho(String titulo, String dataHoraGeracao)* String
+        #montarCorpoEstatisticas(int totalUsuarios, int totalAcessos, double mediaAcessos, String usuarioMaisAtivo, List~Usuario~ usuarios)* String
+        #montarRodape(int totalEntidades)* String
     }
 
-    class DatabaseOperationException {
-        <<Exception>>
-        +DatabaseOperationException(String message)
-        +DatabaseOperationException(String message, Throwable cause)
+    class RelatorioAcessoHTML {
+        <<TemplateMethod / ConcreteClass>>
+        #montarCabecalho(String titulo, String dataHoraGeracao) String
+        #montarCorpoEstatisticas(int, int, double, String, List~Usuario~) String
+        #montarRodape(int totalEntidades) String
+    }
+
+    class RelatorioAcessoPDF {
+        <<TemplateMethod / ConcreteClass>>
+        #montarCabecalho(String titulo, String dataHoraGeracao) String
+        #montarCorpoEstatisticas(int, int, double, String, List~Usuario~) String
+        #montarRodape(int totalEntidades) String
     }
 
     %% ==========================================
-    %% CAMADA DE FRONTEIRA DE DADOS (REPOSITORIES)
+    %% PADRAO ADAPTER (LOGGING)
+    %% ==========================================
+    class AppLogger {
+        <<Adapter Target>>
+        +info(String operacao, String mensagem) void
+        +aviso(String operacao, String mensagem) void
+        +erro(String operacao, String mensagem, Throwable causa) void
+    }
+
+    class JavaUtilLoggerAdapter {
+        <<Adapter>>
+        -adaptee : Logger
+        +info(String operacao, String mensagem) void
+        +aviso(String operacao, String mensagem) void
+        +erro(String operacao, String mensagem, Throwable causa) void
+    }
+
+    class JavaUtilLogger {
+        <<Adaptee : java.util.logging.Logger>>
+        +log(Level level, String msg) void
+    }
+
+    %% ==========================================
+    %% PADRAO REPOSITORY (CONTRATOS E INFRA)
     %% ==========================================
     class UsuarioRepository {
-        <<Interface / Fronteira>>
+        <<Repository Interface>>
         +adicionar(Usuario usuario) void
         +buscarPorId(int id) Optional~Usuario~
         +listarTodos() List~Usuario~
@@ -172,7 +243,7 @@ classDiagram
     }
 
     class UsuarioRepositoryRam {
-        <<Fronteira>>
+        <<Repository Infra RAM>>
         -usuarios : Map~Integer, Usuario~
         +adicionar(Usuario usuario) void
         +buscarPorId(int id) Optional~Usuario~
@@ -183,7 +254,7 @@ classDiagram
     }
 
     class UsuarioRepositorySQLite {
-        <<Fronteira>>
+        <<Repository Infra SQLite>>
         -URL : String$
         +adicionar(Usuario usuario) void
         +buscarPorId(int id) Optional~Usuario~
@@ -194,7 +265,7 @@ classDiagram
     }
 
     class ProdutoRepository {
-        <<Interface / Fronteira>>
+        <<Repository Interface>>
         +salvar(Produto produto) Produto
         +buscarPorId(Long id) Optional~Produto~
         +listarTodos() List~Produto~
@@ -204,7 +275,7 @@ classDiagram
     }
 
     class ProdutoRepositoryRAM {
-        <<Fronteira>>
+        <<Repository Infra RAM>>
         -produtos : Map~Long, Produto~
         -geradorId : AtomicLong
         +salvar(Produto produto) Produto
@@ -216,7 +287,7 @@ classDiagram
     }
 
     class ProdutoRepositorySQLite {
-        <<Fronteira>>
+        <<Repository Infra SQLite>>
         -URL : String$
         +salvar(Produto produto) Produto
         +buscarPorId(Long id) Optional~Produto~
@@ -227,7 +298,7 @@ classDiagram
     }
 
     %% ==========================================
-    %% CAMADA DE ENTIDADE (ENTITY)
+    %% ENTIDADES DE DOMINIO
     %% ==========================================
     class Usuario {
         <<Entidade>>
@@ -235,14 +306,9 @@ classDiagram
         -nome : String
         -email : String
         -senha : String
-        +getId() int
-        +setId(int id) void
-        +getNome() String
-        +setNome(String nome) void
-        +getEmail() String
-        +setEmail(String email) void
-        +getSenha() String
-        +setSenha(String senha) void
+        -quantidadeAcessos : int
+        +registrarAcesso() void
+        +getQuantidadeAcessos() int
     }
 
     class Produto {
@@ -253,60 +319,47 @@ classDiagram
         -preco : BigDecimal
         -tamanho : String
         -usuarioId : Long
-        +getId() Long
-        +setId(Long id) void
-        +getTitulo() String
-        +setTitulo(String titulo) void
-        +getDescricao() String
-        +setDescricao(String descricao) void
-        +getPreco() BigDecimal
-        +setPreco(BigDecimal preco) void
-        +getTamanho() String
-        +setTamanho(String tamanho) void
-        +getUsuarioId() Long
-        +setUsuarioId(Long usuarioId) void
     }
 
     %% ==========================================
-    %% RELACIONAMENTOS (FRONTEIRA -> CONTROLE -> ENTIDADE)
+    %% RELACIONAMENTOS
     %% ==========================================
     Main ..> FacadeSingletonController : aciona
+    Main ..> EntityFactory : cria entidades com
 
     FacadeSingletonController *-- "1" UsuarioService : unifica
     FacadeSingletonController *-- "1" ProdutoService : unifica
+    FacadeSingletonController ..> RepositoryFactory : obtem repositorios via
+    FacadeSingletonController ..> RelatorioEstatisticaAcessoTemplate : gera relatorios via
 
-    UsuarioService --> "1" UsuarioValidator : valida com
+    RepositoryFactory <|.. RamRepositoryFactory : implements
+    RepositoryFactory <|.. SQLiteRepositoryFactory : implements
+    RamRepositoryFactory ..> UsuarioRepositoryRam : cria
+    RamRepositoryFactory ..> ProdutoRepositoryRAM : cria
+    SQLiteRepositoryFactory ..> UsuarioRepositorySQLite : cria
+    SQLiteRepositoryFactory ..> ProdutoRepositorySQLite : cria
+
+    EntityFactory ..> Usuario : instancia
+    EntityFactory ..> Produto : instancia
+
+    RelatorioEstatisticaAcessoTemplate <|-- RelatorioAcessoHTML : extends
+    RelatorioEstatisticaAcessoTemplate <|-- RelatorioAcessoPDF : extends
+
     UsuarioService --> "1" UsuarioRepository : persiste via
-    UsuarioService ..> Usuario : manipula
+    UsuarioService --> "1" UsuarioValidator : valida com
+    UsuarioService --> "1" AppLogger : registra logs via
 
-    ProdutoService --> "1" ProdutoValidator : valida com
     ProdutoService --> "1" ProdutoRepository : persiste via
-    ProdutoService ..> Produto : manipula
+    ProdutoService --> "1" ProdutoValidator : valida com
+    ProdutoService --> "1" AppLogger : registra logs via
 
-    UsuarioValidator ..> ValidationException : lanca
-    ProdutoValidator ..> ValidationException : lanca
-    UsuarioRepositorySQLite ..> DatabaseOperationException : lanca
-    ProdutoRepositorySQLite ..> DatabaseOperationException : lanca
+    AppLogger <|.. JavaUtilLoggerAdapter : implements
+    JavaUtilLoggerAdapter --> "1" JavaUtilLogger : adapta (Adaptee)
 
     UsuarioRepository <|.. UsuarioRepositoryRam : implements
     UsuarioRepository <|.. UsuarioRepositorySQLite : implements
-
     ProdutoRepository <|.. ProdutoRepositoryRAM : implements
     ProdutoRepository <|.. ProdutoRepositorySQLite : implements
 
     Usuario "1" <-- "0..*" Produto : pertence a (usuarioId)
 ```
-
----
-
-# 4. Revisões de Código e Melhorias Aplicadas até a Sprint 3
-
-1. **Desacoplamento de Exceções de Infraestrutura (`SQLException` → `DatabaseOperationException`):**
-   - Anteriormente, `UsuarioRepository` e `UsuarioService` expunham `throws SQLException` em suas assinaturas, acoplando a camada de negócio à API JDBC mesmo quando executada em memória (`RAM`).
-   - Na revisão da Sprint 3, toda `SQLException` lançada em `UsuarioRepositorySQLite` e `ProdutoRepositorySQLite` passou a ser capturada e relançada encapsulada em `DatabaseOperationException`.
-2. **Padronização das Exceções de Validação (`ValidationException`):**
-   - Tanto `UsuarioValidator` quanto `ProdutoValidator` agora lançam `ValidationException` em caso de violação de regras de negócio (nome vazio/com números/longo, senha fraca/igual ao nome ou e-mail, título vazio ou preço não positivo).
-3. **Concorrência Segura em Memória (`ConcurrentHashMap`):**
-   - Os repositórios em memória (`UsuarioRepositoryRam` e `ProdutoRepositoryRAM`) utilizam `ConcurrentHashMap`, evitando condições de corrida em acessos concorrentes.
-4. **Simetria de Operações CRUD nas Duas Entidades (`Usuario` e `Produto`):**
-   - Ambas as entidades contam com operações completas de criação, busca por ID (`Optional`), listagem completa, atualização, remoção e contagem (`contar()`), todas expostas de forma centralizada por `FacadeSingletonController`.
