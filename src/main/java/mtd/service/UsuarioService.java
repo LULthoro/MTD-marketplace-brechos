@@ -4,8 +4,8 @@ import mtd.model.Usuario;
 import mtd.repository.UsuarioRepository;
 import mtd.validator.UsuarioValidator;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public class UsuarioService {
 
@@ -17,13 +17,29 @@ public class UsuarioService {
         this.usuarioValidator = usuarioValidator;
     }
 
-    public void adicionarUsuario(Usuario usuario) throws SQLException {
-        usuarioValidator.validarNome(usuario.getNome());
-        usuarioValidator.validarSenha(usuario.getSenha(), usuario.getNome(), usuario.getEmail());
+    public void adicionarUsuario(Usuario usuario) {
+        usuarioValidator.validar(usuario);
         usuarioRepository.adicionar(usuario);
     }
 
-    public List<Usuario> listarTodosUsuarios() throws SQLException {
+    public Optional<Usuario> buscarPorId(int id) {
+        return usuarioRepository.buscarPorId(id);
+    }
+
+    public List<Usuario> listarTodosUsuarios() {
         return usuarioRepository.listarTodos();
+    }
+
+    public void atualizarUsuario(Usuario usuario) {
+        usuarioValidator.validar(usuario);
+        usuarioRepository.atualizar(usuario);
+    }
+
+    public void deletarUsuario(int id) {
+        usuarioRepository.deletar(id);
+    }
+
+    public int contarUsuarios() {
+        return usuarioRepository.contar();
     }
 }
