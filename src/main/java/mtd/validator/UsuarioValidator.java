@@ -1,5 +1,8 @@
 package mtd.validator;
 
+import mtd.exception.ValidationException;
+import mtd.model.Usuario;
+
 public class UsuarioValidator {
 
     private static final int NOME_MAXIMO_CARACTERES = 12;
@@ -7,21 +10,29 @@ public class UsuarioValidator {
     private static final int SENHA_MAXIMO_CARACTERES = 128;
     private static final int SENHA_MINIMO_TIPOS_CARACTERES = 3;
 
+    public void validar(Usuario usuario) {
+        if (usuario == null) {
+            throw new ValidationException("O usuario nao pode ser nulo.");
+        }
+        validarNome(usuario.getNome());
+        validarSenha(usuario.getSenha(), usuario.getNome(), usuario.getEmail());
+    }
+
     // -------------------------------------------------------------------------
     // Validacao de nome
     // -------------------------------------------------------------------------
 
     public void validarNome(String nome) {
         if (nomeVazio(nome)) {
-            throw new IllegalArgumentException("O nome nao pode ser vazio.");
+            throw new ValidationException("O nome nao pode ser vazio.");
         }
         if (nomeExcedeCaracteresMaximos(nome)) {
-            throw new IllegalArgumentException(
+            throw new ValidationException(
                     "O nome nao pode ter mais de " + NOME_MAXIMO_CARACTERES + " caracteres."
             );
         }
         if (nomeContemNumeros(nome)) {
-            throw new IllegalArgumentException("O nome nao pode conter numeros.");
+            throw new ValidationException("O nome nao pode conter numeros.");
         }
     }
 
@@ -43,29 +54,29 @@ public class UsuarioValidator {
 
     public void validarSenha(String senha, String nome, String email) {
         if (senhaVazia(senha)) {
-            throw new IllegalArgumentException("A senha nao pode ser vazia.");
+            throw new ValidationException("A senha nao pode ser vazia.");
         }
         if (senhaAbaixoDoMinimo(senha)) {
-            throw new IllegalArgumentException(
+            throw new ValidationException(
                     "A senha deve ter no minimo " + SENHA_MINIMO_CARACTERES + " caracteres."
             );
         }
         if (senhaAcimaDoMaximo(senha)) {
-            throw new IllegalArgumentException(
+            throw new ValidationException(
                     "A senha deve ter no maximo " + SENHA_MAXIMO_CARACTERES + " caracteres."
             );
         }
         if (senhaComPoucosTiposDeCaracteres(senha)) {
-            throw new IllegalArgumentException(
+            throw new ValidationException(
                     "A senha deve conter ao menos " + SENHA_MINIMO_TIPOS_CARACTERES +
                     " dos seguintes tipos: maiusculas, minusculas, numeros, caracteres especiais (EX: ' ! @ e etc)."
             );
         }
         if (senhaIgualAoNome(senha, nome)) {
-            throw new IllegalArgumentException("A senha nao pode ser identica ao nome.");
+            throw new ValidationException("A senha nao pode ser identica ao nome.");
         }
         if (senhaIgualAoEmail(senha, email)) {
-            throw new IllegalArgumentException("A senha nao pode ser identica ao email.");
+            throw new ValidationException("A senha nao pode ser identica ao email.");
         }
     }
 
