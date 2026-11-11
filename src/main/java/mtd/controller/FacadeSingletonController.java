@@ -1,6 +1,5 @@
 package mtd.controller;
 
-import mtd.exception.DatabaseOperationException;
 import mtd.model.Produto;
 import mtd.model.Usuario;
 import mtd.repository.ProdutoRepository;
@@ -14,7 +13,6 @@ import mtd.service.UsuarioService;
 import mtd.validator.ProdutoValidator;
 import mtd.validator.UsuarioValidator;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,27 +66,31 @@ public class FacadeSingletonController {
     }
 
     // -------------------------------------------------------------------------
-    // Operacoes de Usuario (Facade)
+    // Operacoes CRUD de Usuario (Facade)
     // -------------------------------------------------------------------------
 
     public void adicionarUsuario(Usuario usuario) {
-        try {
-            usuarioService.adicionarUsuario(usuario);
-        } catch (SQLException e) {
-            throw new DatabaseOperationException("Erro ao adicionar usuario.", e);
-        }
+        usuarioService.adicionarUsuario(usuario);
+    }
+
+    public Optional<Usuario> buscarUsuarioPorId(int id) {
+        return usuarioService.buscarPorId(id);
     }
 
     public List<Usuario> listarTodosUsuarios() {
-        try {
-            return usuarioService.listarTodosUsuarios();
-        } catch (SQLException e) {
-            throw new DatabaseOperationException("Erro ao listar usuarios.", e);
-        }
+        return usuarioService.listarTodosUsuarios();
+    }
+
+    public void atualizarUsuario(Usuario usuario) {
+        usuarioService.atualizarUsuario(usuario);
+    }
+
+    public void deletarUsuario(int id) {
+        usuarioService.deletarUsuario(id);
     }
 
     // -------------------------------------------------------------------------
-    // Operacoes de Produto (Facade)
+    // Operacoes CRUD de Produto (Facade)
     // -------------------------------------------------------------------------
 
     public Produto cadastrarProduto(Produto produto) {
@@ -116,7 +118,6 @@ public class FacadeSingletonController {
     // -------------------------------------------------------------------------
 
     public int getQuantidadeTotalEntidadesCadastradas() {
-        return listarTodosUsuarios().size() + produtoService.contarProdutos();
+        return usuarioService.contarUsuarios() + produtoService.contarProdutos();
     }
 }
-

@@ -43,7 +43,7 @@ public class ProdutoRepositorySQLite implements ProdutoRepository {
     public Produto salvar(Produto produto) {
         boolean possuiId = produto.getId() != null;
         String sql = possuiId
-                ? "INSERT INTO produtos (id, titulo, descricao, preco, tamanho, usuario_id) VALUES (?, ?, ?, ?, ?, ?)"
+                ? "INSERT OR REPLACE INTO produtos (id, titulo, descricao, preco, tamanho, usuario_id) VALUES (?, ?, ?, ?, ?, ?)"
                 : "INSERT INTO produtos (titulo, descricao, preco, tamanho, usuario_id) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(URL);
