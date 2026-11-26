@@ -1,6 +1,7 @@
-package mtd.repository;
+package mtd.infra.persistence.ram;
 
 import mtd.model.Usuario;
+import mtd.repository.UsuarioRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,3 +45,4 @@ public class UsuarioRepositoryRam implements UsuarioRepository {
         return usuarios.size();
     }
 }
+

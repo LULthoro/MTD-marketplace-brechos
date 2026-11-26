@@ -1,7 +1,8 @@
-package mtd.repository;
+package mtd.infra.persistence.sqlite;
 
 import mtd.exception.DatabaseOperationException;
 import mtd.model.Produto;
+import mtd.repository.ProdutoRepository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -6,15 +6,21 @@ public class Usuario {
     private String nome;
     private String email;
     private String senha;
+    private int quantidadeAcessos;
 
     public Usuario() {
     }
 
     public Usuario(int id, String nome, String email, String senha) {
+        this(id, nome, email, senha, 0);
+    }
+
+    public Usuario(int id, String nome, String email, String senha, int quantidadeAcessos) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.senha = senha;
+        this.quantidadeAcessos = quantidadeAcessos;
     }
 
     public int getId() {
@@ -49,12 +55,25 @@ public class Usuario {
         this.senha = senha;
     }
 
+    public int getQuantidadeAcessos() {
+        return quantidadeAcessos;
+    }
+
+    public void setQuantidadeAcessos(int quantidadeAcessos) {
+        this.quantidadeAcessos = quantidadeAcessos;
+    }
+
+    public void registrarAcesso() {
+        this.quantidadeAcessos++;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", email='" + email + '\'' +
+                ", acessos=" + quantidadeAcessos +
                 '}';
     }
 }
