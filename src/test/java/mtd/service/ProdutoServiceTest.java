@@ -2,7 +2,7 @@ package mtd.service;
 
 import mtd.exception.ValidationException;
 import mtd.model.Produto;
-import mtd.repository.ProdutoRepositoryRAM;
+import mtd.infra.persistence.ram.ProdutoRepositoryRAM;
 import mtd.validator.ProdutoValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
