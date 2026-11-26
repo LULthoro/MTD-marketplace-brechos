@@ -1,7 +1,16 @@
 package mtd.model;
 
+import mtd.memento.ProdutoMemento;
+
 import java.math.BigDecimal;
 
+/**
+ * <<Entidade / Originador>> Entidade de domínio Produto.
+ *
+ * Atua como Originador no padrão Memento: pode criar um instantâneo
+ * ({@link #criarMemento()}) do seu estado atual e restaurá-lo a partir
+ * de um Memento salvo ({@link #restaurarMemento(ProdutoMemento)}).
+ */
 public class Produto {
 
     private Long id;
@@ -69,6 +78,39 @@ public class Produto {
 
     public void setUsuarioId(Long usuarioId) {
         this.usuarioId = usuarioId;
+    }
+
+    // -------------------------------------------------------------------------
+    // Memento — Originador
+    // -------------------------------------------------------------------------
+
+    /**
+     * Cria um Memento com o estado atual deste Produto.
+     * Deve ser chamado pelo Caretaker (via Facade) <em>antes</em> de qualquer
+     * atualização cujo desfazer seja necessário.
+     *
+     * @return {@link mtd.memento.ProdutoMemento} com cópia imutável do estado.
+     */
+    public mtd.memento.ProdutoMemento criarMemento() {
+        return new mtd.memento.ProdutoMemento(id, titulo, descricao, preco, tamanho, usuarioId);
+    }
+
+    /**
+     * Cria um Produto a partir de um Memento previamente salvo.
+     * Usado pelo Facade para restaurar o estado anterior após um desfazer.
+     *
+     * @param memento Instantâneo salvo pelo Caretaker.
+     * @return Novo Produto com o estado do Memento.
+     */
+    public static Produto fromMemento(mtd.memento.ProdutoMemento memento) {
+        return new Produto(
+                memento.getId(),
+                memento.getTitulo(),
+                memento.getDescricao(),
+                memento.getPreco(),
+                memento.getTamanho(),
+                memento.getUsuarioId()
+        );
     }
 
     @Override

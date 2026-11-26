@@ -18,7 +18,7 @@ public class Main {
 
         FacadeSingletonController facade = FacadeSingletonController.getInstance(modo);
 
-        System.out.println("\n=== 1. CRUD E VALIDACAO DE USUARIOS ===\n");
+        System.out.println("\n=== 1. CRUD E VALIDACAO DE USUARIOS (via Command) ===\n");
 
         // Cadastros validos
         tentarAdicionarUsuario(facade, new Usuario(1, "Lucas", "lucas@email.com", "Senha@123"));
@@ -32,31 +32,43 @@ public class Main {
         tentarAdicionarUsuario(facade, new Usuario(7, "Ana", "ana@email.com", "somenteminusculas"));
         tentarAdicionarUsuario(facade, new Usuario(8, "Carla", "Ab1@cdef.gh", "Ab1@cdef.gh"));
 
-        // Atualizacao e busca por ID de Usuario
+        // Atualizacao e busca por ID de Usuario (Command AtualizarUsuarioCommand)
         facade.atualizarUsuario(new Usuario(2, "Mariana", "mariana@email.com", "Mar1a#Secret"));
         facade.buscarUsuarioPorId(2).ifPresent(u ->
                 System.out.println("[UPDATE] Usuario ID 2 atualizado: " + u));
 
-        System.out.println("\n=== 2. CRUD E VALIDACAO DE PRODUTOS ===\n");
+        System.out.println("\n=== 2. CRUD E VALIDACAO DE PRODUTOS (via Command) ===\n");
 
-        // Cadastros validos de Produto
+        // Cadastros validos de Produto (Command CadastrarProdutoCommand)
         tentarCadastrarProduto(facade, new Produto(1L, "Jaqueta Jeans Vintage", "Jaqueta anos 90 conservada", new BigDecimal("120.00"), "M", 1L));
         tentarCadastrarProduto(facade, new Produto(2L, "Camisa Flanelada Xadrez", "100% algodao seminova", new BigDecimal("65.50"), "G", 1L));
         tentarCadastrarProduto(facade, new Produto(3L, "Vestido Floral Retro", "Estampa exclusiva", new BigDecimal("89.90"), "P", 2L));
 
-        // Cadastros invalidos de Produto (titulo vazio e preco negativo/zero)
+        // Cadastros invalidos de Produto
         tentarCadastrarProduto(facade, new Produto(4L, "   ", "Produto sem titulo", new BigDecimal("50.00"), "M", 1L));
         tentarCadastrarProduto(facade, new Produto(5L, "Calca Cargo", "Preco invalido", new BigDecimal("-10.00"), "40", 2L));
 
-        // Atualizacao, busca por ID e remocao de Produto
-        facade.atualizarProduto(new Produto(1L, "Jaqueta Jeans Vintage 90s", "Jaqueta anos 90 na promocao", new BigDecimal("99.90"), "M", 1L));
-        facade.buscarProdutoPorId(1L).ifPresent(p ->
-                System.out.println("[UPDATE] Produto ID 1 atualizado: " + p));
+        System.out.println("\n=== 3. MEMENTO — DESFAZER ULTIMA ATUALIZACAO DE PRODUTO ===\n");
 
+        // Estado ANTES da atualizacao
+        facade.buscarProdutoPorId(1L).ifPresent(p ->
+                System.out.println("[ANTES]  Produto ID 1: " + p));
+
+        // Atualiza produto (Command AtualizarProdutoCommand + Memento salvo automaticamente)
+        facade.atualizarProduto(new Produto(1L, "Jaqueta Jeans Vintage 90s", "Preco promocional", new BigDecimal("99.90"), "M", 1L));
+        facade.buscarProdutoPorId(1L).ifPresent(p ->
+                System.out.println("[DEPOIS] Produto ID 1: " + p));
+
+        // Desfaz a ultima atualizacao (Memento restaura estado anterior)
+        facade.desfazerUltimaAtualizacaoProduto();
+        facade.buscarProdutoPorId(1L).ifPresent(p ->
+                System.out.println("[UNDO]   Produto ID 1: " + p));
+
+        // Remocao e historico de Commands
         facade.deletarProduto(3L);
         System.out.println("[DELETE] Produto ID 3 removido do catalogo.");
 
-        System.out.println("\n=== 3. RESUMO FINAL DO SISTEMA (FACADE) ===\n");
+        System.out.println("\n=== 4. RESUMO FINAL DO SISTEMA (FACADE) ===\n");
 
         List<Usuario> usuarios = facade.listarTodosUsuarios();
         System.out.println("Usuarios ativos (" + usuarios.size() + "):");
@@ -72,6 +84,9 @@ public class Main {
 
         System.out.println("\nTotal consolidado de entidades cadastradas (Usuarios + Produtos): "
                 + facade.getQuantidadeTotalEntidadesCadastradas());
+
+        System.out.println("\nHistorico de Commands executados: "
+                + facade.getInvoker().tamanhoHistorico() + " operacoes registradas.");
     }
 
     private static void tentarAdicionarUsuario(FacadeSingletonController facade, Usuario usuario) {
