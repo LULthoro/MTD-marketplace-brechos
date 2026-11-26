@@ -1,5 +1,6 @@
 package mtd.repository;
 
+import mtd.infra.persistence.ram.UsuarioRepositoryRam;
 import mtd.model.Usuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

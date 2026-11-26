@@ -2,7 +2,7 @@ package mtd.service;
 
 import mtd.exception.ValidationException;
 import mtd.model.Usuario;
-import mtd.repository.UsuarioRepositoryRam;
+import mtd.infra.persistence.ram.UsuarioRepositoryRam;
 import mtd.validator.UsuarioValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

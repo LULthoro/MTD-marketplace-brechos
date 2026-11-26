@@ -19,7 +19,7 @@ public class Main {
 
         FacadeSingletonController facade = FacadeSingletonController.getInstance(modo);
 
-        System.out.println("\n=== 1. CRUD E VALIDACAO DE USUARIOS ===\n");
+        System.out.println("\n=== 1. CRUD E VALIDACAO DE USUARIOS (via Command) ===\n");
 
         // Cadastros validos usando EntityFactory
         tentarAdicionarUsuario(facade, EntityFactory.criarUsuario(1, "Lucas", "lucas@email.com", "Senha@123"));
@@ -54,16 +54,28 @@ public class Main {
         // Cadastros invalidos de Produto (titulo vazio e preco negativo/zero)
         tentarCadastrarProduto(facade, EntityFactory.criarProduto(4L, "   ", "Produto sem titulo", new BigDecimal("50.00"), "M", 1L));
         tentarCadastrarProduto(facade, EntityFactory.criarProduto(5L, "Calca Cargo", "Preco invalido", new BigDecimal("-10.00"), "40", 2L));
+      
+                System.out.println("\n=== 3. MEMENTO - DESFAZER ULTIMA ATUALIZACAO DE PRODUTO ===\n");
+
+        // Estado ANTES da atualizacao
+        facade.buscarProdutoPorId(1L).ifPresent(p ->
+                System.out.println("[ANTES]  Produto ID 1: " + p));
 
         // Atualizacao, busca por ID e remocao de Produto
         facade.atualizarProduto(EntityFactory.criarProduto(1L, "Jaqueta Jeans Vintage 90s", "Jaqueta anos 90 na promocao", new BigDecimal("99.90"), "M", 1L));
         facade.buscarProdutoPorId(1L).ifPresent(p ->
-                System.out.println("[UPDATE] Produto ID 1 atualizado: " + p));
+                System.out.println("[DEPOIS] Produto ID 1: " + p));
 
+        // Desfaz a ultima atualizacao (Memento restaura estado anterior)
+        facade.desfazerUltimaAtualizacaoProduto();
+        facade.buscarProdutoPorId(1L).ifPresent(p ->
+                System.out.println("[UNDO]   Produto ID 1: " + p));
+
+        // Remocao e historico de Commands
         facade.deletarProduto(3L);
         System.out.println("[DELETE] Produto ID 3 removido do catalogo.");
 
-        System.out.println("\n=== 3. RESUMO FINAL DO SISTEMA (FACADE) ===\n");
+        System.out.println("\n=== 4. RESUMO FINAL DO SISTEMA (FACADE) ===\n");
 
         List<Usuario> usuarios = facade.listarTodosUsuarios();
         System.out.println("Usuarios ativos (" + usuarios.size() + "):");
@@ -80,6 +92,8 @@ public class Main {
         System.out.println("\nTotal consolidado de entidades cadastradas (Usuarios + Produtos): "
                 + facade.getQuantidadeTotalEntidadesCadastradas());
 
+        System.out.println("\nHistorico de Commands executados: "
+                + facade.getInvoker().tamanhoHistorico() + " operacoes registradas.");
         System.out.println("\n=== 4. RELATORIO DE ACESSOS EM HTML (TEMPLATE METHOD) ===\n");
         System.out.println(facade.gerarRelatorioAcessoHTML());
 
